@@ -20,53 +20,20 @@ export const checkSubscription = createServerFn()
       return { valid: false, reason: "no_subscription" as const };
     }
 
-    // Active subscription — always valid
+    // Only active subscriptions grant access
     if (sub.status === "active") {
       return {
         valid: true,
         status: "active" as const,
-        trialEndsAt: null,
-        daysRemaining: null,
       };
     }
 
-    // Trialing — check if trial is still valid
-    if (sub.status === "trialing") {
-      if (!sub.trialEndsAt) {
-        // No trial end set, treat as valid for now
-        return {
-          valid: true,
-          status: "trialing" as const,
-          trialEndsAt: null,
-          daysRemaining: null,
-        };
-      }
-
-      const trialEnd = new Date(sub.trialEndsAt + "Z");
-      const now = new Date();
-      const diffMs = trialEnd.getTime() - now.getTime();
-      const daysRemaining = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-
-      if (diffMs <= 0) {
-        return {
-          valid: false,
-          reason: "trial_expired" as const,
-          status: "trialing" as const,
-          trialEndsAt: sub.trialEndsAt,
-          daysRemaining: 0,
-        };
-      }
-
-      return {
-        valid: true,
-        status: "trialing" as const,
-        trialEndsAt: sub.trialEndsAt,
-        daysRemaining,
-      };
-    }
-
-    // Expired or canceled
-    return { valid: false, reason: "expired" as const, status: sub.status as "expired" | "canceled" };
+    // Everything else (pending, canceled, expired, etc.) — no access
+    return {
+      valid: false,
+      reason: "not_active" as const,
+      status: sub.status as string,
+    };
   });
 
 // --- Server function to activate subscription ---

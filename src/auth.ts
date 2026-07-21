@@ -39,7 +39,6 @@ export const signup = createServerFn()
         name: user.name,
         email: user.email,
         subscriptionStatus: user.subscription_status,
-        trialEndsAt: user.trial_ends_at,
       },
       token,
     };
@@ -75,7 +74,6 @@ export const login = createServerFn()
         name: user.name,
         email: user.email,
         subscriptionStatus: user.subscription_status,
-        trialEndsAt: user.trial_ends_at,
       },
       token,
     };
@@ -97,6 +95,5 @@ export const validateSession = createServerFn()
       name: session.name,
       email: session.email,
       subscriptionStatus: session.subscriptionStatus,
-      trialEndsAt: session.trialEndsAt,
     };
   });

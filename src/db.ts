@@ -24,7 +24,7 @@ function getDb(): Database.Database {
         email TEXT NOT NULL UNIQUE,
         password_hash TEXT NOT NULL,
         name TEXT NOT NULL,
-        subscription_status TEXT NOT NULL DEFAULT 'trialing',
+        subscription_status TEXT NOT NULL DEFAULT 'pending',
         trial_ends_at TEXT,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       );
@@ -38,18 +38,11 @@ function getDb(): Database.Database {
       const colNames = cols.map((c) => c.name);
 
       if (!colNames.includes("subscription_status")) {
-        _db.exec(`ALTER TABLE users ADD COLUMN subscription_status TEXT NOT NULL DEFAULT 'trialing'`);
+        _db.exec(`ALTER TABLE users ADD COLUMN subscription_status TEXT NOT NULL DEFAULT 'pending'`);
       }
       if (!colNames.includes("trial_ends_at")) {
         _db.exec(`ALTER TABLE users ADD COLUMN trial_ends_at TEXT`);
       }
-
-      // Set trial for existing users who have NULL trial_ends_at
-      // Give them a fresh 7-day trial from now
-      const trialEnds = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-      _db.prepare(
-        "UPDATE users SET trial_ends_at = ? WHERE trial_ends_at IS NULL AND subscription_status = 'trialing'"
-      ).run(trialEnds);
     } catch {
       // Columns already exist — ignore
     }
@@ -162,12 +155,10 @@ export interface Asset {
 export const db = {
   // Users
   createUser(email: string, passwordHash: string, name: string): User {
-    // Set trial to 7 days from now
-    const trialEnds = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     const stmt = getDb().prepare(
-      "INSERT INTO users (email, password_hash, name, subscription_status, trial_ends_at) VALUES (?, ?, ?, 'trialing', ?)"
+      "INSERT INTO users (email, password_hash, name, subscription_status) VALUES (?, ?, ?, 'pending')"
     );
-    const result = stmt.run(email, passwordHash, name, trialEnds);
+    const result = stmt.run(email, passwordHash, name);
     return this.getUserById(Number(result.lastInsertRowid))!;
   },
 

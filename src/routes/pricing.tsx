@@ -5,7 +5,8 @@ export const Route = createFileRoute("/pricing")({
   component: PricingPage,
 });
 
-const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/00wbJ1bR72Ev6cvfPK3VC00";
+const STRIPE_MONTHLY = "https://buy.stripe.com/bJe7sLcVbendbwPeLG3VC01";
+const STRIPE_ANNUAL = "https://buy.stripe.com/7sYcN53kBaX6X6cvgTO3VC02";
 
 function useIsLoggedIn() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -25,14 +26,31 @@ function useIsLoggedIn() {
   return { loggedIn, userEmail };
 }
 
+const FEATURES = [
+  "Unlimited Business Blueprints",
+  "Full Business Assets Library",
+  "AI-Generated Marketing Content",
+  "Email Sequence & Funnel Builder",
+  "Content Calendars & Strategy Docs",
+  "All New Features as They Ship",
+  "Priority Support",
+];
+
 function PricingPage() {
   const { loggedIn, userEmail } = useIsLoggedIn();
 
-  function getStripeUrl(): string {
+  function getMonthlyUrl(): string {
     if (userEmail) {
-      return `${STRIPE_PAYMENT_LINK}?prefilled_email=${encodeURIComponent(userEmail)}`;
+      return `${STRIPE_MONTHLY}?prefilled_email=${encodeURIComponent(userEmail)}`;
     }
-    return STRIPE_PAYMENT_LINK;
+    return STRIPE_MONTHLY;
+  }
+
+  function getAnnualUrl(): string {
+    if (userEmail) {
+      return `${STRIPE_ANNUAL}?prefilled_email=${encodeURIComponent(userEmail)}`;
+    }
+    return STRIPE_ANNUAL;
   }
 
   return (
@@ -59,7 +77,7 @@ function PricingPage() {
                 href="/signup"
                 className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700"
               >
-                Start Your Free Trial
+                Subscribe Now
               </a>
             )}
           </div>
@@ -78,29 +96,23 @@ function PricingPage() {
               Simple, Transparent Pricing
             </h1>
             <p className="mt-4 text-lg text-gray-500">
-              One plan. Unlimited access to everything. No hidden fees, no
-              surprises. Start with a 7-day free trial — no credit card
-              required.
+              Start building immediately. No free trial — you keep everything you
+              create.
             </p>
           </div>
 
-          {/* Pricing card */}
-          <div className="mx-auto mt-16 max-w-lg">
-            <div className="relative rounded-3xl border-2 border-indigo-600 bg-white p-8 shadow-xl shadow-indigo-100 sm:p-10">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-indigo-600 px-4 py-1 text-sm font-semibold text-white">
-                Launch Offer
-              </div>
-
+          {/* Pricing cards — two side by side */}
+          <div className="mx-auto mt-16 grid max-w-3xl gap-8 sm:grid-cols-2">
+            {/* Monthly card */}
+            <div className="relative rounded-3xl border-2 border-gray-200 bg-white p-8 shadow-sm sm:p-10">
               <div className="text-center">
-                <h3 className="text-2xl font-bold text-gray-900">
-                  E-Simplicity Plan
-                </h3>
+                <h3 className="text-2xl font-bold text-gray-900">Monthly</h3>
                 <p className="mt-2 text-gray-500">
-                  Everything you need to launch and grow
+                  Full access, billed monthly
                 </p>
                 <div className="mt-6">
                   <span className="text-5xl font-extrabold text-gray-900">
-                    $29
+                    $47
                   </span>
                   <span className="ml-1 text-lg text-gray-500">/month</span>
                 </div>
@@ -110,15 +122,7 @@ function PricingPage() {
               </div>
 
               <ul className="mt-8 space-y-4">
-                {[
-                  "Unlimited Business Blueprints",
-                  "Full Business Assets Library",
-                  "AI-Generated Marketing Content",
-                  "Email Sequence & Funnel Builder",
-                  "Content Calendars & Strategy Docs",
-                  "All New Features as They Ship",
-                  "Priority Support",
-                ].map((item) => (
+                {FEATURES.map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <svg
                       className="mt-0.5 h-5 w-5 flex-shrink-0 text-indigo-600"
@@ -139,44 +143,71 @@ function PricingPage() {
               </ul>
 
               <a
-                href={getStripeUrl()}
-                className="mt-6 block w-full rounded-xl bg-indigo-600 px-6 py-4 text-center text-base font-semibold text-white shadow-md transition-all hover:bg-indigo-700 hover:shadow-lg active:scale-[0.98]"
+                href={getMonthlyUrl()}
+                className="mt-8 block w-full rounded-xl bg-indigo-600 px-6 py-4 text-center text-base font-semibold text-white shadow-md transition-all hover:bg-indigo-700 hover:shadow-lg active:scale-[0.98]"
               >
-                Subscribe Now
+                Subscribe Monthly
               </a>
+            </div>
 
-              {!loggedIn && (
-                <a
-                  href="/signup"
-                  className="mt-3 block rounded-xl border-2 border-indigo-100 px-6 py-4 text-center text-base font-semibold text-indigo-600 transition-all hover:border-indigo-300 hover:bg-indigo-50"
-                >
-                  Start Your Free Trial →
-                </a>
-              )}
+            {/* Annual card */}
+            <div className="relative rounded-3xl border-2 border-indigo-600 bg-white p-8 shadow-xl shadow-indigo-100 sm:p-10">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 px-4 py-1 text-sm font-semibold text-white">
+                2 months free
+              </div>
 
-              <p className="mt-4 text-center text-sm text-gray-400">
-                7-day free trial included. No credit card required to get
-                started.
-              </p>
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-gray-900">Annual</h3>
+                <p className="mt-2 text-gray-500">
+                  Best value — save $94/year
+                </p>
+                <div className="mt-6">
+                  <span className="text-5xl font-extrabold text-gray-900">
+                    $470
+                  </span>
+                  <span className="ml-1 text-lg text-gray-500">/year</span>
+                </div>
+                <p className="mt-1 text-sm text-indigo-600 font-medium">
+                  That's just $39.17/month
+                </p>
+              </div>
+
+              <ul className="mt-8 space-y-4">
+                {FEATURES.map((item) => (
+                  <li key={item} className="flex items-start gap-3">
+                    <svg
+                      className="mt-0.5 h-5 w-5 flex-shrink-0 text-indigo-600"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span className="text-gray-600">{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <a
+                href={getAnnualUrl()}
+                className="mt-8 block w-full rounded-xl bg-indigo-600 px-6 py-4 text-center text-base font-semibold text-white shadow-md transition-all hover:bg-indigo-700 hover:shadow-lg active:scale-[0.98]"
+              >
+                Subscribe Annually
+              </a>
             </div>
           </div>
 
-          {/* FAQ — minimal */}
+          {/* FAQ */}
           <div className="mx-auto mt-20 max-w-2xl">
             <h2 className="text-xl font-bold text-center text-gray-900">
               Frequently Asked Questions
             </h2>
             <dl className="mt-10 space-y-6">
-              <div>
-                <dt className="text-base font-semibold text-gray-900">
-                  What happens after my free trial?
-                </dt>
-                <dd className="mt-2 text-gray-500">
-                  After 7 days, you'll need to subscribe to continue accessing
-                  your Business Blueprints and the Assets Library. Your data is
-                  always saved — you won't lose anything.
-                </dd>
-              </div>
               <div>
                 <dt className="text-base font-semibold text-gray-900">
                   Can I cancel anytime?
@@ -199,12 +230,23 @@ function PricingPage() {
               </div>
               <div>
                 <dt className="text-base font-semibold text-gray-900">
-                  Is there a free plan?
+                  Do I keep my work if I cancel?
                 </dt>
                 <dd className="mt-2 text-gray-500">
-                  We offer a 7-day free trial that gives you full access to
-                  everything. After that, the subscription is $29/month. We
-                  believe in being upfront — no bait-and-switch.
+                  Yes. Everything you create — Business Blueprints, Project
+                  Briefs, and downloaded assets — is yours to keep. When you
+                  cancel, you simply lose access to the platform; your data
+                  remains safe and can be recovered if you resubscribe.
+                </dd>
+              </div>
+              <div>
+                <dt className="text-base font-semibold text-gray-900">
+                  Is there a refund policy?
+                </dt>
+                <dd className="mt-2 text-gray-500">
+                  If you're not satisfied within the first 14 days of your
+                  subscription, contact us for a full refund. We stand behind
+                  the value of our platform.
                 </dd>
               </div>
             </dl>
@@ -224,7 +266,7 @@ function PricingPage() {
                 href="/signup"
                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-8 py-4 text-base font-bold text-white shadow-lg shadow-indigo-200 transition-all hover:from-indigo-700 hover:to-violet-700 hover:shadow-xl"
               >
-                Start Your Free Trial →
+                Create Account & Subscribe →
               </a>
             )}
             <p className="mt-3 text-sm text-gray-400">

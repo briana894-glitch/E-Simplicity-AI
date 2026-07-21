@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signup } from "../auth";
 
 export const Route = createFileRoute("/signup")({
@@ -12,6 +12,7 @@ function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [toast, setToast] = useState("");
 
   function validate(): boolean {
     const errors: Record<string, string> = {};
@@ -37,6 +38,13 @@ function SignupPage() {
     return Object.keys(errors).length === 0;
   }
 
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(""), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -47,7 +55,8 @@ function SignupPage() {
       const result = await signup({ data: { name: form.name, email: form.email, password: form.password } });
       localStorage.setItem("es_token", result.token);
       localStorage.setItem("es_user", JSON.stringify(result.user));
-      navigate({ to: "/dashboard" });
+      setToast("Account created! Choose a plan to get started.");
+      navigate({ to: "/pricing" });
     } catch (err: any) {
       setError(err.message || "Something went wrong. Please try again.");
     } finally {
@@ -72,6 +81,20 @@ function SignupPage() {
       {/* Signup form */}
       <div className="flex flex-1 items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
+          {/* Toast */}
+          {toast && (
+            <div className="mb-6 rounded-xl border border-green-200 bg-green-50 px-5 py-4 flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+              <span className="text-xl">🎉</span>
+              <p className="text-sm font-semibold text-green-800">{toast}</p>
+              <button
+                onClick={() => setToast("")}
+                className="ml-auto text-green-400 hover:text-green-600 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
           <div className="text-center">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
               Create your account

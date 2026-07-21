@@ -59,7 +59,7 @@ function Navbar() {
             href={ctaHref}
             className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-700 hover:shadow-md"
           >
-            {loggedIn ? "Dashboard" : "Get Started Free"}
+            {loggedIn ? "Dashboard" : "Start Building Today"}
           </a>
         </div>
 
@@ -123,7 +123,7 @@ function Navbar() {
               href={ctaHref}
               className="mt-1 rounded-lg bg-indigo-600 px-5 py-2.5 text-center text-sm font-semibold text-white"
             >
-              {loggedIn ? "Dashboard" : "Get Started Free"}
+              {loggedIn ? "Dashboard" : "Start Building Today"}
             </a>
           </div>
         </div>
@@ -170,7 +170,7 @@ function HeroSection() {
             href={ctaHref}
             className="rounded-xl bg-indigo-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-indigo-200 transition-all hover:bg-indigo-700 hover:shadow-xl hover:shadow-indigo-200 active:scale-[0.98]"
           >
-            {loggedIn ? "Go to Dashboard" : "Start Your Project Brief — Free"}
+            {loggedIn ? "Go to Dashboard" : "Start Building Today"}
           </a>
           <a
             href="#how-it-works"
@@ -181,7 +181,7 @@ function HeroSection() {
         </div>
 
         <p className="mt-5 text-sm text-gray-400">
-          No credit card required. Launch your business in minutes.
+          Start building today. Launch your business in minutes.
         </p>
       </div>
     </section>
@@ -468,7 +468,7 @@ function Pricing() {
                 Everything you need to launch and grow
               </p>
               <div className="mt-6">
-                <span className="text-5xl font-extrabold text-gray-900">$29</span>
+                <span className="text-5xl font-extrabold text-gray-900">$47</span>
                 <span className="ml-1 text-lg text-gray-500">/month</span>
               </div>
               <p className="mt-1 text-sm text-gray-400">
@@ -512,7 +512,7 @@ function Pricing() {
               View Pricing
             </a>
             <p className="mt-3 text-center text-sm text-gray-400">
-              No credit card required to get started
+              Start building today — no free trial needed.
             </p>
           </div>
         </div>
@@ -539,14 +539,14 @@ function CTASection() {
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-indigo-100">
               Stop dreaming. Start building. Your complete launch kit is one brief
-              away — and it's completely free to get started.
+              away — subscribe and get started today.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a
                 href={ctaHref}
                 className="rounded-xl bg-white px-8 py-4 text-base font-bold text-indigo-700 shadow-lg transition-all hover:bg-indigo-50 hover:shadow-xl active:scale-[0.98]"
               >
-                {loggedIn ? "Go to Dashboard →" : "Get Started Free →"}
+                {loggedIn ? "Go to Dashboard →" : "Start Building Today →"}
               </a>
             </div>
             <p className="mt-4 text-sm text-indigo-200">

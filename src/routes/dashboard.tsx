@@ -27,8 +27,6 @@ interface BlueprintSummary {
 interface SubInfo {
   valid: boolean;
   status?: string;
-  trialEndsAt?: string | null;
-  daysRemaining?: number | null;
   reason?: string;
 }
 
@@ -71,7 +69,7 @@ function DashboardPage() {
           navigate({ to: "/pricing" });
         }
       } catch {
-        setSubInfo({ valid: true, status: "trialing", daysRemaining: 7 });
+        setSubInfo({ valid: false, status: "pending" });
       } finally {
         setSubLoading(false);
       }
@@ -145,9 +143,7 @@ function DashboardPage() {
 
   // Determine subscription banner content
   const isActive = subInfo?.status === "active";
-  const isTrialing = subInfo?.status === "trialing";
-  const isExpired = subInfo?.reason === "trial_expired" || subInfo?.reason === "expired";
-  const daysRemaining = subInfo?.daysRemaining ?? null;
+  const isPending = subInfo?.status === "pending";
 
   const navItems = [
     { label: "Dashboard", href: "/dashboard", icon: "📊", active: true },
@@ -294,7 +290,7 @@ function DashboardPage() {
               <span className="text-2xl">✨</span>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-green-800">
-                  Active subscriber
+                  ✨ Active subscriber
                 </p>
                 <p className="text-xs text-green-600 mt-0.5">
                   You have full access to all features. Thanks for being a member!
@@ -303,39 +299,18 @@ function DashboardPage() {
             </div>
           )}
 
-          {/* Trial banner */}
-          {!isActive && isTrialing && daysRemaining !== null && daysRemaining > 0 && (
-            <div className="mb-6 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 px-5 py-4 flex items-center gap-3 shadow-sm">
-              <span className="text-2xl">✨</span>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-indigo-800">
-                  Free trial — {daysRemaining} day{daysRemaining !== 1 ? "s" : ""} remaining
-                </p>
-                <p className="text-xs text-indigo-600 mt-0.5">
-                  Enjoy full access to everything. No credit card required.
-                </p>
-              </div>
-              <a
-                href="/pricing"
-                className="shrink-0 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition-all"
-              >
-                See Plans
-              </a>
-            </div>
-          )}
-
-          {/* Expired banner */}
-          {!isActive && isExpired && (
-            <div className="mb-6 rounded-xl bg-amber-50 border border-amber-300 px-5 py-5 shadow-sm">
+          {/* Pending banner */}
+          {isPending && (
+            <div className="mb-6 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 px-5 py-5 shadow-sm">
               <div className="flex items-start gap-3">
-                <span className="text-2xl">⏰</span>
+                <span className="text-2xl">🚀</span>
                 <div className="flex-1">
-                  <p className="text-sm font-bold text-amber-800">
-                    Your free trial has ended
+                  <p className="text-sm font-bold text-indigo-800">
+                    Choose a plan to unlock the platform
                   </p>
-                  <p className="text-sm text-amber-700 mt-1">
-                    Subscribe to continue accessing your Business Blueprints,
-                    Assets Library, and all platform features.
+                  <p className="text-sm text-indigo-700 mt-1">
+                    Subscribe to access your Business Blueprints, Assets
+                    Library, and all platform features.
                   </p>
                   <a
                     href="/pricing"

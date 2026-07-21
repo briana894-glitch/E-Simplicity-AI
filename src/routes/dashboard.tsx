@@ -143,7 +143,8 @@ function DashboardPage() {
     );
   }
 
-  // Determine trial banner content
+  // Determine subscription banner content
+  const isActive = subInfo?.status === "active";
   const isTrialing = subInfo?.status === "trialing";
   const isExpired = subInfo?.reason === "trial_expired" || subInfo?.reason === "expired";
   const daysRemaining = subInfo?.daysRemaining ?? null;
@@ -287,8 +288,23 @@ function DashboardPage() {
             </div>
           </div>
 
+          {/* Active subscriber banner */}
+          {isActive && (
+            <div className="mb-6 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 px-5 py-4 flex items-center gap-3 shadow-sm">
+              <span className="text-2xl">✨</span>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-green-800">
+                  Active subscriber
+                </p>
+                <p className="text-xs text-green-600 mt-0.5">
+                  You have full access to all features. Thanks for being a member!
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Trial banner */}
-          {isTrialing && daysRemaining !== null && daysRemaining > 0 && (
+          {!isActive && isTrialing && daysRemaining !== null && daysRemaining > 0 && (
             <div className="mb-6 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 px-5 py-4 flex items-center gap-3 shadow-sm">
               <span className="text-2xl">✨</span>
               <div className="flex-1">
@@ -309,7 +325,7 @@ function DashboardPage() {
           )}
 
           {/* Expired banner */}
-          {isExpired && (
+          {!isActive && isExpired && (
             <div className="mb-6 rounded-xl bg-amber-50 border border-amber-300 px-5 py-5 shadow-sm">
               <div className="flex items-start gap-3">
                 <span className="text-2xl">⏰</span>

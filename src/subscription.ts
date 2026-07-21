@@ -68,3 +68,21 @@ export const checkSubscription = createServerFn()
     // Expired or canceled
     return { valid: false, reason: "expired" as const, status: sub.status as "expired" | "canceled" };
   });
+
+// --- Server function to activate subscription ---
+
+export const activateSubscription = createServerFn()
+  .validator((data: unknown) => data as { token: string })
+  .handler(async ({ data }) => {
+    if (!data.token) {
+      return { success: false, error: "no_token" };
+    }
+
+    const session = db.getUserBySessionToken(data.token);
+    if (!session) {
+      return { success: false, error: "invalid_token" };
+    }
+
+    db.updateSubscriptionStatus(session.userId, "active");
+    return { success: true };
+  });

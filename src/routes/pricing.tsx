@@ -1,27 +1,38 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/pricing")({
   component: PricingPage,
 });
 
+const STRIPE_PAYMENT_LINK = "https://buy.stripe.com/00wbJ1bR72Ev6cvfPK3VC00";
+
 function useIsLoggedIn() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   useEffect(() => {
     const token = localStorage.getItem("es_token");
     setLoggedIn(!!token);
+    if (token) {
+      try {
+        const user = JSON.parse(localStorage.getItem("es_user") || "{}");
+        setUserEmail(user.email || null);
+      } catch {
+        setUserEmail(null);
+      }
+    }
   }, []);
-  return loggedIn;
+  return { loggedIn, userEmail };
 }
 
 function PricingPage() {
-  const navigate = useNavigate();
-  const loggedIn = useIsLoggedIn();
-  const [showComingSoon, setShowComingSoon] = useState(false);
+  const { loggedIn, userEmail } = useIsLoggedIn();
 
-  function handleSubscribe() {
-    setShowComingSoon(true);
-    setTimeout(() => setShowComingSoon(false), 4000);
+  function getStripeUrl(): string {
+    if (userEmail) {
+      return `${STRIPE_PAYMENT_LINK}?prefilled_email=${encodeURIComponent(userEmail)}`;
+    }
+    return STRIPE_PAYMENT_LINK;
   }
 
   return (
@@ -127,20 +138,12 @@ function PricingPage() {
                 ))}
               </ul>
 
-              {/* Coming soon toast */}
-              {showComingSoon && (
-                <div className="mt-4 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800 text-center animate-in fade-in">
-                  Payment processing coming soon. Your account will remain in
-                  trial mode.
-                </div>
-              )}
-
-              <button
-                onClick={handleSubscribe}
+              <a
+                href={getStripeUrl()}
                 className="mt-6 block w-full rounded-xl bg-indigo-600 px-6 py-4 text-center text-base font-semibold text-white shadow-md transition-all hover:bg-indigo-700 hover:shadow-lg active:scale-[0.98]"
               >
                 Subscribe Now
-              </button>
+              </a>
 
               {!loggedIn && (
                 <a
